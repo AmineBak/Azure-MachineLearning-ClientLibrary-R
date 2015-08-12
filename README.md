@@ -1,9 +1,9 @@
 # Azure-MachineLearning-ClientLibrary-R
 
-This package provides an interface to access web services on Microsoft Azure Machine Learning from your local R environment. There are three main functionalities:
-- publish: define a custom function or train a model and publish it to Azure
-- discover: browse web services that are available to your workspace
-- consume: use available web service from R in a variety of convenient formats
+This package provides an interface to access web services on Microsoft Azure Machine Learning (Azure ML) from your local R environment. There are three main functionalities:
+- publish: define an R function or train a model and publish it to Azure ML as a web service
+- discover: browse web services that you have published
+- consume: use available web service direclty from R in a variety of convenient formats
 
 This is a technology preview. The APIs used by the package are still subject to change. Please send any bugs or comments you have to the maintainers listed.
 
@@ -19,26 +19,24 @@ devtools::install_github("Azure-MachineLearning-ClientLibrary-R", "Azure", subdi
 Also, you will need to install [R tools](https://cran.r-project.org/bin/windows/Rtools/) and 
 make sure that a zipper is included in your PATH variable (instructions [here](http://stackoverflow.com/questions/29129681/create-zip-file-error-running-command-had-status-127))
 
-We plan on releasing the package to CRAN eventually.
-
+We plan on releasing the package to CRAN soon.
 
 ## Using the package
 
-Currently the APIs we are using are only deployed internally, so please go [here](studio.azureml-int.net) and create an account. 
-After logging in, under the "Settings" tab, copy and paste your workspace ID from the "Name" sub-tab into your R console. From the "Authorization Tokens" sub-tab, copy your primary authorization token into your R console. You will need this information to access all package functionality.
+To get started, go [here](https://studio.azureml-int.net) and create a free account (not a guest account), or use an existing account to log in. 
 
-We expect to migrate to the production version of Azure within a few weeks.
+After logging in, under the "Settings" tab, copy and paste your workspace ID from the "Name" sub-tab into your R console. From the "Authorization Tokens" sub-tab, copy your Primary Authorization Token into your R console. You will need this information to access all package functionality.
 
 
 ## Publishing a web service
 
-The primary functionality implemented by this package is the capability to publish a model from R to Azure Machine Learning without having to copy and paste your R script to the Machine Learning Studio UI. Publishing a function is now a simple one line function call.
+The primary functionality implemented by this package is the capability to publish a function or a model from R to Azure ML as a RESTFull web service. This can be done in a single command. 
 
 ```
 publishWebService(functionName, serviceName, inputSchema, outputSchema, wkID, authToken)
 ```
 
-The publish function takes in the name of the function to be published as a string, the name to be displayed on Azure, your workspace ID, and your authorization token. The function also requires the input and output schemas of the function to be published, which is a list of the format
+The publish function takes in the name of the function to be published as a string, the name to be displayed on Azure ML, your Workspace ID, and your Workspace Authorization Token. The function also requires the input and output schemas of the function to be published, which is a list of the format
 
 ```
 list("arg1"=<type>, "arg2"=<type>, ...)
@@ -54,10 +52,12 @@ The R datatypes supported are as follows:
 - int
 - bool
 
-If using a factor variable, it is recommend you use strings instead, e.g. "male" and "female".
+If using a factor variable, it is recommended you use strings instead, e.g. "male" and "female".
 We are currently working to extend functionality to be able to handle complex data types, as well as infer the signature of user functions, so users won't need to manually enter the schemas.
 
-The publish function will return a lists of lists. The first list contains the details of the web service. The second list contains a list of the endpoints of the web service. Please refer to the example for how to programmatically use the return values to consume the new web service.
+The publish function will return a lists of lists. The first list contains the details of the web service such as the URL, API Key and Help Page URL.  You will need to provide the URL and the API Key to call the web service from other applications such as web or mobile apps.
+
+The second list contains a list of the endpoints of the web service. Please refer to the examples for how to programmatically use the return values to consume the new web service.
 
 You are also able to update your function with one line. Note that this also requires passing the input and output schemas of the function.
 
